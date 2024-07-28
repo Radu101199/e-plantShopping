@@ -9,7 +9,9 @@ function ProductList() {
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
     const [addedToCart, setAddedToCart] = useState({});
     const dispatch = useDispatch();
+    // Fetch total quantity from cart state
     const totalQuantity = useSelector(state => state.cart.totalQuantity);
+    const cartItems = useSelector(state => state.cart.items);
 
     const handleAddToCart = (product) => {
         dispatch(addItem(product));
@@ -18,6 +20,9 @@ function ProductList() {
             [product.name]: true, // Set the product name as key and value as true to indicate it's added to cart
         }));
         };
+        const isItemInCart = (name) => {
+            return cartItems.some(item => item.name === name);
+          };
     const plantsArray = [
         {
             category: "Air Purifying Plants",
@@ -290,7 +295,12 @@ const handlePlantsClick = (e) => {
                             <img className="product-image" src={plant.image} alt={plant.name} />
                             <div className="product-title">{plant.name}</div>
                             {/*Similarly like the above plant.name show other details like description and cost*/}
-                            <button  className="product-button" onClick={() => handleAddToCart(plant)}>Add to Cart</button>
+                            <button
+                      className={`product-button ${isItemInCart(plant.name) ? 'added-to-cart' : ''}`}
+                      onClick={() => handleAddToCart(plant)}
+                      disabled={isItemInCart(plant.name)}
+                    > {isItemInCart(plant.name) ? 'Added to cart' : 'Add to Cart'}
+                    </button>
                         </div>
                         ))}
                     </div>
